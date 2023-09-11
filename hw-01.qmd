@@ -1,6 +1,6 @@
 ---
 title: "HW 01"
-author: "INSERT YOUR NAME HERE"
+author: "SWETHA SIRIPURAPU"
 format: html
 toc: true
 ---
@@ -9,18 +9,274 @@ toc: true
 
 ```{r label-me-1}
 
+library(dsbox)  # Load the package
+library(dplyr)
+
+accidents <- accidents %>%
+  mutate(weekday_indicator = ifelse(day_of_week %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"), "Weekday", "Weekend"))
+
+library(ggplot2)
+    severity_colors <- c("purple", "lightgreen", "yellow") 
+  ggplot(accidents, aes(x = time, fill = severity)) +
+   geom_density(alpha = 0.5) +
+   #labs(title = "Weekdays", x = "Time of the day", y = "Density") +
+   labs(title = "Number of accidents throughout the day\nBy day of week and severity",x="Time of the day", y="Density")+
+      scale_fill_manual(values = setNames(severity_colors, unique(accidents$severity))) +
+   facet_wrap(~weekday_indicator, ncol = 1)  # Display weekday plot
 ```
+
+  
+Data Interpretation:
+=>Slight accidents: We can see that most of the slightest number of accidents occured between 2PM - 5PM during both weekdays and weekends.  
+
+=>Fatal Accidents: There were no fatal accidents on the weekend and those that occured during the weekdays were the highest between 10AM to 2PM.
+
+=>Serious Accidents: The highest number of serious accidents are between 5 PM - 7 PM
+
+Out of all the three, slight accidents are more likely to occur, on both weekends and weekdays.
+  
+
 
 ## 2 - NYC marathon winners
 
 ```{r label-me-2}
 
+library(openintro)
+data("nyc_marathon")
+str(nyc_marathon)
+
+# Histogram
+hist(nyc_marathon$time_hrs, 
+     main = "Distribution of Marathon Times", 
+     xlab = "Marathon Time (hours)", 
+     col = "lightblue", 
+     breaks = 30)
+
+
+
+# Single boxplot for all runners
+boxplot(nyc_marathon$time_hrs, 
+        main = "Distribution of Marathon Times", 
+        xlab = "All Runners", 
+        ylab = "Marathon Time (hours)", 
+        col = rgb(0.2,0.8,0.5,1))
+
+
 ```
+
+
+=>Features Apparent in the Histogram but Not in the Box Plot:
+
+The histogram can show the actual distribution of the data, enabling you to see modes, skewness etc.You can see the number of occurrences within each time bin, which isn't clear in a box plot.
+
+=>Features Apparent in the Box Plot but Not in the Histogram:
+
+Central Tendency and Spread: The box plot clearly shows the median and the interquartile range, providing a clear summary of the central tendency and spread of the data.Box plots are excellent for identifying outliers clearly, which might not be as apparent in a histogram.
+
+
+```{r}
+
+# Create side-by-side box plots with custom colors
+ggplot(nyc_marathon, aes(x=division, y=time_hrs, fill=division)) +
+  geom_boxplot() +
+  scale_fill_manual(values=c("Men" = rgb(0.2,0.8,0.5,1), "Women" = rgb(0.8,0.4,0.5,1))) +
+  labs(title="Distribution of Marathon Times by Gender", x="Division", y="Marathon Time (hours)") +
+  theme_minimal()
+
+```
+
+Firstly, the median time required for women to complete the marathon is notably greater than that for men, indicating a higher central tendency in women’s marathon completion times. Moreover, the interquartile range for women is larger compared to men, signifying a broader spread of completion times centered around the median, and possibly hinting at a more diverse range of performances within the women's group. In terms of outliers, which represent runners with exceptionally fast or slow times, both groups exhibit a notable presence. The men's group has 7 outliers concentrated at the upper end of the time distribution, whereas the women's group hosts 8, dispersed more broadly across the range. This dispersion in the women’s group may imply a wider variance in the extremes of performance, with some runners completing the marathon substantially faster or slower than the majority. 
+
+```{r}
+
+# Create side-by-side box plots without fill color to avoid redundancy
+ggplot(nyc_marathon, aes(x=division, y=time_hrs)) +
+  geom_boxplot() +
+  labs(title="Distribution of Marathon Times by Gender", x="Division", y="Marathon Time (hours)") +
+  theme_minimal()
+
+```
+
+In the plot created for part (b), we used different colors to represent the 'Men' and 'Women' divisions, which also introduced a legend to indicate which color represented which group. However, since the x-axis labels ('Men' and 'Women') already clearly indicate which box plot corresponds to which group, the color distinction and the legend become redundant information in this visualization.In part (c), we removed the color fill and the legend, focusing solely on the distribution of the marathon times as represented by the box plots.
+
+
+```{r}
+
+ggplot(nyc_marathon, aes(x=year, y=time_hrs, color=division, shape=division)) +
+  geom_point() +
+  geom_line() +
+  scale_color_manual(values = c("Men" = rgb(0.2,0.8,0.5,1), "Women" = rgb(0.8,0.4,0.5,1))) +
+  scale_shape_manual(values = c("Men" = 19, "Women" = 17)) +
+  labs(title = "Marathon Times of Men and Women Over the Years", x = "Year", y = "Marathon Time (hours)") +
+  theme_minimal()
+
+```
+
+
+1. This plot enables us to visualize the trend in marathon times across years, which wasn't possible with the previous box plots that only showed the distribution of times within specific gender groups.We can now compare the marathon times for men and women on a year-to-year basis.
+2. Over the years, we might notice if the gap in performance between the genders is narrowing, remaining constant, or widening, which is a dynamic view not achievable with a static box plot.
+3. Each point on the plot represents an individual observation (a specific marathon time in a specific year), allowing for a more granular view of the data, compared to the box plots which summarize the data distribution in a compact form
+
 
 ## 3 - US counties
 
+```{r}
+
+data("county")
+ggplot(county) +
+  geom_point(aes(x = median_edu, y = median_hh_income)) +
+  geom_boxplot(aes(x = smoking_ban, y = pop2017))
+
+```
+
+It doesn't make sense because the scatter plot and the box plot are fundamentally different types of visualizations used for different purposes. The scatter plot is used to visualize the relationship between two continuous variables, whereas the box plot is used to visualize the distribution of a continuous variable across different levels of a categorical variable.Combining them in this way, without adjusting the scales or making other modifications, may result in a plot that doesn't effectively convey any
+
+```{r}
+
+ggplot(county %>% filter(!is.na(median_edu))) + 
+  geom_point(aes(x = homeownership, y = poverty)) + 
+  facet_grid(median_edu ~ .)
+
+ggplot(county %>% filter(!is.na(median_edu))) + 
+  geom_point(aes(x = homeownership, y = poverty)) + 
+  facet_grid(. ~ median_edu)
+
+```
+
+Comparing the poverty levels across different median education levels would arguably be easier with the second plot where the facets are arranged in columns. This layout allows for a horizontal read, which is generally easier when trying to compare a single variable (poverty in this case) across different levels of another variable (median education levels), since the y-axes are aligned, facilitating direct visual comparison.
+
+#3c)
+```{r}
+
+#A
+ggplot(county,mapping=aes(homeownership,poverty))+
+  geom_point()+
+  labs(title = "Plot A")
+
+#B
+ggplot(county,mapping=aes(homeownership,poverty))+
+  geom_point()+
+  geom_smooth(method = "loess",se=FALSE)+
+  labs(title = "Plot B")
+
+#E
+ggplot(county, aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  geom_smooth(se = FALSE, aes(linetype = metro, group = metro))
+
+#D
+ggplot(county, aes(x = homeownership, y = poverty)) +
+  geom_smooth(mapping = aes(group = metro), se = FALSE) +
+  geom_point()
+
+#C
+ggplot(county, aes(x = homeownership, y = poverty)) +
+  geom_point(color = "black") +
+  geom_smooth(mapping = aes(group = metro), color = "green", se = FALSE) +
+  guides(color=FALSE) +
+  theme_minimal()
+
+#F
+ggplot(county, aes(x = homeownership, y = poverty, colour = metro)) +
+  geom_point() +
+  geom_smooth(se = FALSE) +
+  theme_minimal()
+
+#G
+ggplot(county, aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  geom_smooth(se = FALSE, aes(group = 1))
+
+#H
+ggplot(county,mapping=aes(homeownership,poverty))+
+  geom_point(aes(color = metro))+
+    labs(title = "Plot H")
+
+```
 
 ## 4 - Rental apartments in SF
 
+```{r}
+
+library(ggplot2)
+library(dplyr)
+library(tidytuesdayR)
+
+# Load the data
+data <- tt_load("2022-07-05")$rent
+
+sf_data <- data %>% 
+  filter(city == "san francisco", room_in_apt == 0) %>% 
+  filter(nhood %in% c("alamo square", "bayview", "candlestick point", "castro", "CCSF", "cole valley", "downtown", "hayes valley")) %>% 
+  mutate(price_per_bed = price / beds) %>% 
+  group_by(year, nhood) %>% 
+  summarize(price_per_bed = mean(price_per_bed, na.rm = TRUE), .groups = 'drop')
+
+# Data Visualization
+ggplot(sf_data, aes(x = year, y = price_per_bed, color = nhood)) + 
+  geom_line() +
+  geom_point() +
+  facet_wrap(~ nhood, scales = "free_y") +
+  labs(title = "Rental Price per Bedroom Over Time in San Francisco", x = "Year", y = "Price per Bedroom") +
+  theme_minimal()
+
+```
 
 ## 5 - Napoleon’s march.
+
+```{r}
+
+#I have borrowed the below code from git hub : https://gist.github.com/friendly/36e8d6643c35a23e9e445230eb266bd3
+
+data(Minard.troops, package="HistData")
+data(Minard.cities, package="HistData")
+data(Minard.temp, package="HistData")
+ 
+require(ggplot2)
+require(scales)
+require(gridExtra)
+
+#' Define breaks variable
+breaks <- c(1, 2, 3) * 10^5 
+
+plot_troops <- ggplot(Minard.troops, aes(long, lat)) +
+        geom_path(aes(size = survivors, colour = direction, group = group),
+                 lineend = "round", linejoin = "round") +
+        scale_color_manual("March Direction", 
+                       values = c("blue", "red"), 
+                       labels=c("Advance", "Retreat"))
+
+plot_cities <- geom_text(aes(label = city), size = 4, data = Minard.cities, color = "darkgreen")
+
+plot_minard <- plot_troops + plot_cities +
+        scale_size("Survivors Count", range = c(1, 10), 
+                    breaks = breaks, labels = scales::comma(breaks)) +
+        coord_cartesian(xlim = c(24, 38)) +
+        xlab(NULL) + 
+        ylab("Latitude") + 
+        ggtitle("Napoleon's March on Moscow: A Grim Journey") +
+        theme_minimal() +
+        theme(legend.position=c(.8, .2), legend.box="horizontal") +
+        annotate("text", x = 30, y = 55.5, label = "Significant Decrease in Survivors", color = "darkred")
+
+plot_temp <- ggplot(Minard.temp, aes(long, temp)) +
+        geom_path(color="darkblue", size=1.5) +
+        geom_point(size=2) +
+        geom_text(aes(label=date)) +
+        xlab("Longitude") + ylab("Temperature (°C)") +
+        coord_cartesian(xlim = c(24, 38)) + 
+        theme_minimal()
+
+# Adjust the windows dimensions (this line is specific to Windows, might not work in other environments)
+windows(width=10, height=5)
+
+# Combine the two plots into one
+grid.arrange(plot_minard, plot_temp, nrow=2, heights=c(3,1))
+
+```
+
+Description of the code in my own words:
+
+The visualization is divided into two major parts: the first part (plot_minard) illustrates the journey of the troops, including the survivors and their direction of movement (advance or retreat), using different colors (blue and red) and line sizes to indicate the number of survivors. The cities they passed are annotated on the graph.
+The second part (plot_temp) depicts the temperature changes experienced during the campaign, with lines indicating the temperature trend and points marking the specific data entries along with date annotations. The graphs are displayed in a 2-row grid, with the troop movement graph occupying a larger space to emphasize its details.
+I changed the color scheme to a more contrasted one - using blue to denote the advance and retaining red for the retreat, making it visually easier to differentiate. Additionally, I added an annotation to highlight a significant point in the data where there was a noticeable decrease in survivors. The temperature graph now also indicates the values in Celsius for a clearer understanding. I changed the theme to theme_minimal to give a clean and focused representation of the data.
