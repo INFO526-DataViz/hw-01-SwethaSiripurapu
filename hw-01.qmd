@@ -112,7 +112,6 @@ ggplot(nyc_marathon, aes(x=year, y=time_hrs, color=division, shape=division)) +
 
 ```
 
-
 1. This plot enables us to visualize the trend in marathon times across years, which wasn't possible with the previous box plots that only showed the distribution of times within specific gender groups.We can now compare the marathon times for men and women on a year-to-year basis.
 2. Over the years, we might notice if the gap in performance between the genders is narrowing, remaining constant, or widening, which is a dynamic view not achievable with a static box plot.
 3. Each point on the plot represents an individual observation (a specific marathon time in a specific year), allowing for a more granular view of the data, compared to the box plots which summarize the data distribution in a compact form
@@ -198,8 +197,8 @@ ggplot(county,mapping=aes(homeownership,poverty))+
 
 ```{r}
 
-library(ggplot2)
-library(dplyr)
+# Load necessary packages
+library(tidyverse)
 library(tidytuesdayR)
 
 # Load the data
@@ -213,14 +212,23 @@ sf_data <- data %>%
   summarize(price_per_bed = mean(price_per_bed, na.rm = TRUE), .groups = 'drop')
 
 # Data Visualization
+# Data Visualization
 ggplot(sf_data, aes(x = year, y = price_per_bed, color = nhood)) + 
   geom_line() +
   geom_point() +
   facet_wrap(~ nhood, scales = "free_y") +
   labs(title = "Rental Price per Bedroom Over Time in San Francisco", x = "Year", y = "Price per Bedroom") +
-  theme_minimal()
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(min(sf_data$year, na.rm = TRUE), max(sf_data$year, na.rm = TRUE), by = 3)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 
 ```
+
+I chose to code such that it would help me focus on specific details - rental prices per bedroom in eight different neighborhoods from the years 2001 to 2016. I considered including box plots, as my focus was on a time-series analysis, I gravitated towards line graphs. They seemed to offer a clearer and continuous narrative of the year-wise price evolution.
+
+I noticed some distinct patterns over the years. Between 2001 and 2005, the neighborhoods of Downtown and Bayview offered more affordable options compared to Castro and Hayes Valley, which seemed to have steadier, slightly higher prices. Moving into 2006 to 2010, there was a noticeable decrease in rental prices across most neighborhoods, particularly around 2010.
+
+Furthermore, I observed that from 2011 to 2016, the rental market appeared stable with most neighborhoods not experiencing significant fluctuations. Notably, Downtown had the lowest rents, whereas Alamo Square commanded the highest rental prices during this period. 
 
 ## 5 - Napoleon’s march.
 
