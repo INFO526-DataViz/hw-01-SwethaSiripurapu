@@ -277,8 +277,6 @@ plot_temp <- ggplot(Minard.temp, aes(long, temp)) +
         coord_cartesian(xlim = c(24, 38)) + 
         theme_minimal()
 
-# Adjust the windows dimensions (this line is specific to Windows, might not work in other environments)
-windows(width=10, height=5)
 
 # Combine the two plots into one
 grid.arrange(plot_minard, plot_temp, nrow=2, heights=c(3,1))
