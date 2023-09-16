@@ -234,6 +234,8 @@ Furthermore, I observed that from 2011 to 2016, the rental market appeared stabl
 
 ```{r}
 
+install.packages("HistData")
+
 #I have borrowed the below code from git hub : https://gist.github.com/friendly/36e8d6643c35a23e9e445230eb266bd3
 
 data(Minard.troops, package="HistData")
