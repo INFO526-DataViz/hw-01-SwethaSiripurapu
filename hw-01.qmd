@@ -41,7 +41,7 @@ Out of all the three, slight accidents are more likely to occur, on both weekend
 
 ```{r label-me-2}
 
-
+library(ggplot2)
 data("nyc_marathon")
 str(nyc_marathon)
 
