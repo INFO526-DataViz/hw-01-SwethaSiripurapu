@@ -243,7 +243,7 @@ I chose to code such that it would help me focus on specific details - rental pr
 
 I noticed some distinct patterns over the years. Between 2001 and 2005, the neighborhoods of Downtown and Bayview offered more affordable options compared to Castro and Hayes Valley, which seemed to have steadier, slightly higher prices. Moving into 2006 to 2010, there was a noticeable decrease in rental prices across most neighborhoods, particularly around 2010.
 
-Furthermore, I observed that from 2011 to 2016, the rental market appeared stable with most neighborhoods not experiencing significant fluctuations. Notably, Downtown had the lowest rents, whereas Alamo Square commanded the highest rental prices during this period. 
+Furthermore, I observed that from 2011 to 2016, the rental market appeared stable with most neighborhoods not experiencing significant fluctuations. Notably, Downtown had the lowest rents, whereas Alamo Square commanded the highest rental prices during this period.
 
 ## 5 - Napoleon’s march.
 
